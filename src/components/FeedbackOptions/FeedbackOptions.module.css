@@ -1,0 +1,11 @@
+.wrapper {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+.btn {
+  width: 60px;
+}
+.btn:first-letter {
+  text-transform: uppercase;
+}

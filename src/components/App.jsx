@@ -1,37 +1,50 @@
 import React, { Component } from 'react';
+import { Section } from './Section/Section';
+import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
+import { Statistics } from './Statistics/Statistics';
+import { Notification } from './Notification/Notification';
 
-import css from './App.module.css';
-import Statistics from "./Statistics/Statistics";
 export class App extends Component {
   state = {
     good: 0,
     neutral: 0,
     bad: 0,
   };
-  changeState = () => {
+  onLeaveFeedback = option => {
     this.setState(prevState => {
       return {
-        good: prevState.good + 1,
+        [option]: prevState[option] + 1,
       };
     });
   };
+  countTotalFeedback = () => {
+    return this.state.good + this.state.neutral + this.state.bad;
+  };
+  countPositiveFeedbackPercentage = () => {
+    const total = this.countTotalFeedback();
+    const number = Math.round((this.state.good * 100) / total);
+    return number;
+  };
   render() {
+    const { good, neutral, bad } = this.state;
     return (
-      <div>
-        <h2>Please leave feedback</h2>
-        <button onClick={this.changeState} type="button" className={css.btn}>
-          Good
-        </button>
-        <button type="button" className={css.btn}>
-          Neutral
-        </button>
-        <button type="button" className={css.btn}>
-          Bad
-        </button>
-
-        <h2>Statistics</h2>
-        <Statistics good={this.state.good} bad={this.state.bad} neutral={this.state.neutral}/>
-      </div>
+      <Section title={'Plese leave your feedback'}>
+        <FeedbackOptions
+          options={Object.keys(this.state)}
+          onLeaveFeedback={this.onLeaveFeedback}
+        />
+        {this.countTotalFeedback() ? (
+          <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={this.countTotalFeedback()}
+            positivePercentage={this.countPositiveFeedbackPercentage()}
+          />
+        ) : (
+          <Notification message={'There is no feedback'} />
+        )}
+      </Section>
     );
   }
 }
